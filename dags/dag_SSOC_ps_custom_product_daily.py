@@ -3,15 +3,15 @@ from airflow.operators.python import PythonOperator
 from airflow.operators.email import EmailOperator
 from airflow.utils.file import mkdirs
 from datetime import datetime,timedelta
-from lib.conn_db import Palantir
+from conn_db import Palantir
 from pathlib import Path
-from lib.db import MysqlOps
+from db import MysqlOps
 from airflow.logging_config import log as logger
 from airflow.exceptions import AirflowException
 import pandas as pd
 import numpy as np
-from lib import DICT_PS_CUSTOM_PRODUCT_FOR_SSOC
-from lib.email import email_on_customization
+import DICT_PS_CUSTOM_PRODUCT_FOR_SSOC
+from email import email_on_customization
 import tempfile
 import boto3
 
