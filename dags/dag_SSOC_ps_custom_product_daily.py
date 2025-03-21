@@ -3,6 +3,9 @@ from airflow.operators.python import PythonOperator
 from airflow.operators.email import EmailOperator
 from airflow.utils.file import mkdirs
 from datetime import datetime,timedelta
+
+import sys
+sys.path.append('/opt/airflow/dags/repo/dags')
 from conn_db import Palantir
 from pathlib import Path
 from db import MysqlOps
