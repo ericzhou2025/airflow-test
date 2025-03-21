@@ -9,7 +9,7 @@ from airflow.providers.microsoft.mssql.hooks.mssql import MsSqlHook
 from airflow.providers.mysql.operators.mysql import MySqlOperator
 # from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 from airflow.providers.mysql.hooks.mysql import MySqlHook
-from db import DB
+from lib.db import DB
 
 
 # noinspection PyUnresolvedReferences
@@ -21,7 +21,7 @@ class Palantir(DB):
         self.uri = v.get("palantir_uri").format(self.token, self.truststore)
         self.conn = None
         self.cursor = None
-
+    
     def query(self, sql):
         """
         run palantir sql query and returns data in format of dataframe
@@ -31,12 +31,14 @@ class Palantir(DB):
     def connect(self):
         jpype.startJVM(jpype.getDefaultJVMPath(), "-ea", "-Djava.class.path={}".format(os.pathsep.join(self.palantir_jars)))
         self.conn = jaydebeapi.connect('com.palantir.foundry.sql.jdbc.FoundryJdbcDriver', url=self.uri)
+        logger.info('Palantir Connection is {}'.format(self.conn))
         self.cursor = self.conn.cursor()
-
+        logger.info('Palantir Cursor is {}'.format(self.cursor))
+    
     def __enter__(self):
         self.connect()
         return self
-
+    
     def __exit__(self, exc_type, exc_val, exc_tb):
         try:
             jpype.shutdownJVM()
@@ -70,4 +72,3 @@ class XcomMySqlOperator(MySqlOperator):
           self.sql,
           parameters=self.parameters
         )
-
