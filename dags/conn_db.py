@@ -6,9 +6,9 @@ from airflow.providers.jdbc.hooks.jdbc import jaydebeapi
 from airflow.logging_config import log as logger
 from airflow.models.variable import Variable as v
 from airflow.providers.microsoft.mssql.hooks.mssql import MsSqlHook
-from airflow.providers.mysql.operators.mysql import MySqlOperator
-# from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
-from airflow.providers.mysql.hooks.mysql import MySqlHook
+#from airflow.providers.mysql.operators.mysql import MySqlOperator
+#from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
+#from airflow.providers.mysql.hooks.mysql import MySqlHook
 from db import DB
 
 
@@ -46,29 +46,29 @@ class Palantir(DB):
             logger.warning('Exception raised while shutting down JVM, exception is: %s', exc)
 
 
-class MysqlDb(DB):
-    def __init__(self, conn_id) -> None:
-        self.hook = MySqlHook(conn_id)
-        self.conn = self.hook.get_conn()
-        self.cursor = self.conn.cursor()
+#class MysqlDb(DB):
+#    def __init__(self, conn_id) -> None:
+#        self.hook = MySqlHook(conn_id)
+#        self.conn = self.hook.get_conn()
+#        self.cursor = self.conn.cursor()
 
 
-class MssqlDb(DB):
-    def __init__(self, conn_id) -> None:
-        self.hook = MsSqlHook(conn_id)
-        self.conn = self.hook.get_conn()
-        self.cursor = self.conn.cursor()
+#class MssqlDb(DB):
+#    def __init__(self, conn_id) -> None:
+#        self.hook = MsSqlHook(conn_id)
+#        self.conn = self.hook.get_conn()
+#        self.cursor = self.conn.cursor()
 
 
-class XcomMySqlOperator(MySqlOperator):
-    """
-    derive from MySqlOperator and added Xcom to it.
-    """
-    def execute(self, context):
-        self.log.info('Executing: %s', self.sql)
-        hook = MySqlHook(mysql_conn_id=self.mysql_conn_id,
-                         schema=self.database)
-        return hook.get_pandas_df(
-          self.sql,
-          parameters=self.parameters
-        )
+#class XcomMySqlOperator(MySqlOperator):
+#    """
+#    derive from MySqlOperator and added Xcom to it.
+#    """
+#    def execute(self, context):
+#        self.log.info('Executing: %s', self.sql)
+#        hook = MySqlHook(mysql_conn_id=self.mysql_conn_id,
+#                         schema=self.database)
+#        return hook.get_pandas_df(
+#          self.sql,
+#          parameters=self.parameters
+ #       )
