@@ -16,7 +16,7 @@ from airflow.logging_config import log as logger
 from airflow.exceptions import AirflowException
 import pandas as pd
 import numpy as np
-import DICT_PS_CUSTOM_PRODUCT_FOR_SSOC
+from . import DICT_PS_CUSTOM_PRODUCT_FOR_SSOC
 from email import email_on_customization
 import tempfile
 import boto3
