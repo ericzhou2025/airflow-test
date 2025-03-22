@@ -26,7 +26,7 @@ DICT_SAP_NEXT_MATERIAL = {
 
 from lib.conn_db import Palantir
 from pathlib import Path
-#from db import MysqlOps
+from lib.db import MysqlOps
 from airflow.logging_config import log as logger
 from airflow.exceptions import AirflowException
 import pandas as pd
@@ -82,10 +82,10 @@ def conn_mysql(**kwargs):
     mysql_db = MysqlOps(conn_id)
     mysql_db.truncate_table(table_name)
 
-    # df_palantir = pd.read_csv(file_path, sep='|')
-    # df_palantir = df_palantir.replace({np.nan:None})
+    df_palantir = pd.read_csv(file_path, sep='|')
+    df_palantir = df_palantir.replace({np.nan:None})
 
-    # strainsDB_db.insert_with_dataframe2(df_palantir, table_name)
+    trainsDB_db.insert_with_dataframe2(df_palantir, table_name)
     mysql_db.bulk_load_with_csv(file_path, table_name, "|")
     logger.info('{0} {1} fully inserted'.format(conn_id, table_name))
 
