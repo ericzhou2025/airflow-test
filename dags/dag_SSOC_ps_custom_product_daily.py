@@ -32,16 +32,16 @@ from airflow.exceptions import AirflowException
 import pandas as pd
 import numpy as np
 #import DICT_PS_CUSTOM_PRODUCT_FOR_SSOC
-from email import email_on_customization
+#from email import email_on_customization
 import tempfile
 import boto3
 
 default_args = {
     "owner": "Karen Huang",
     "start_date": datetime(2025, 1, 1),
-    "email": ["karen.huang@merckgroup.com"],
-    "email_on_failure": True,
-    "email_on_retry": False,
+    #"email": ["karen.huang@merckgroup.com"],
+    #"email_on_failure": True,
+    #"email_on_retry": False,
     "retries": 1,
     "retry_delay": timedelta(minutes=20),
 }
@@ -90,24 +90,6 @@ def conn_mysql(**kwargs):
     logger.info('{0} {1} fully inserted'.format(conn_id, table_name))
 
 
-def email_on_success(**kwargs):
-    ti = kwargs['ti']
-    xcom_key = kwargs['xcom_key']
-    row_count = ti.xcom_pull(key=xcom_key)['row_count']
-    dag = kwargs.get('dag_run')
-    content = "{0} records successfully inserted into {1}".format(row_count, xcom_key)
-    # email_op = EmailOperator(
-    #     task_id = "send_email_on_success",
-    #     to = ["karen.huang@merckgroup.com"],
-    #     subject = "Airflow success: {0}".format(kwargs.get('dag_run')),
-    #     html_content = "{0} records successfully inserted into {1}".format(row_count, xcom_key)
-    # )
-    # email_op.execute(kwargs)
-    email_on_customization(
-        send_to= ["karen.huang@merckgroup.com"],
-        content = content,
-        dag = dag
-    )
 
 
 pull_ps_custom_product_from_palantir_task = PythonOperator(
@@ -135,16 +117,8 @@ truncate_table_and_load_csv_to_mysql_task = PythonOperator(
 )
 
 
-send_mail_task = PythonOperator(
-    task_id = "email_notification_on_success",
-    python_callable = email_on_success,
-    op_kwargs = {
-        "xcom_key": "ps_custom_product",
-    },
-    dag = dag,
-    provide_context = True
-)
 
 
-pull_ps_custom_product_from_palantir_task >> truncate_table_and_load_csv_to_mysql_task >> send_mail_task
+
+pull_ps_custom_product_from_palantir_task >> truncate_table_and_load_csv_to_mysql_task
 
