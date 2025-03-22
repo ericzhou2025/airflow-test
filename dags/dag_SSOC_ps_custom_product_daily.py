@@ -9,7 +9,7 @@ from datetime import datetime,timedelta
 
 import sys
 sys.path.append('/opt/airflow/dags/repo/dags')
-from conn_db import Palantir
+from lib.conn_db import Palantir
 from pathlib import Path
 #from db import MysqlOps
 from airflow.logging_config import log as logger
