@@ -3,7 +3,7 @@ import typing as t
 import pandas as pd
 import pandas.io.sql as sqlio
 from airflow.exceptions import AirflowException
-from airflow.providers.mysql.hooks.mysql import MySqlHook
+#from airflow.providers.mysql.hooks.mysql import MySqlHook
 from airflow.logging_config import log as logger
 from lib.db_utils import get_tuples, get_columns_in_list
 
