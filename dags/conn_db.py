@@ -11,7 +11,7 @@ from airflow.providers.microsoft.mssql.hooks.mssql import MsSqlHook
 #from airflow.providers.mysql.operators.mysql import MySqlOperator
 #from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 #from airflow.providers.mysql.hooks.mysql import MySqlHook
-from db import DB
+from lib.db import DB
 
 
 # noinspection PyUnresolvedReferences
