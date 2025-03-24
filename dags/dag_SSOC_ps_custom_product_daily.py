@@ -39,11 +39,11 @@ import boto3
 default_args = {
     "owner": "Karen Huang",
     "start_date": datetime(2025, 1, 1),
-    #"email": ["karen.huang@merckgroup.com"],
-    #"email_on_failure": True,
-    #"email_on_retry": False,
+    "email": ["karen.huang@merckgroup.com"],
+    "email_on_failure": True,
+    "email_on_retry": False,
     "retries": 1,
-    "retry_delay": timedelta(minutes=1),
+    "retry_delay": timedelta(minutes=20),
 }
 
 
@@ -82,14 +82,32 @@ def conn_mysql(**kwargs):
     mysql_db = MysqlOps(conn_id)
     mysql_db.truncate_table(table_name)
 
-    df_palantir = pd.read_csv(file_path, sep='|')
-    df_palantir = df_palantir.replace({np.nan:None})
+    # df_palantir = pd.read_csv(file_path, sep='|')
+    # df_palantir = df_palantir.replace({np.nan:None})
 
-    trainsDB_db.insert_with_dataframe2(df_palantir, table_name)
+    # strainsDB_db.insert_with_dataframe2(df_palantir, table_name)
     mysql_db.bulk_load_with_csv(file_path, table_name, "|")
     logger.info('{0} {1} fully inserted'.format(conn_id, table_name))
 
 
+def email_on_success(**kwargs):
+    ti = kwargs['ti']
+    xcom_key = kwargs['xcom_key']
+    row_count = ti.xcom_pull(key=xcom_key)['row_count']
+    dag = kwargs.get('dag_run')
+    content = "{0} records successfully inserted into {1}".format(row_count, xcom_key)
+    # email_op = EmailOperator(
+    #     task_id = "send_email_on_success",
+    #     to = ["karen.huang@merckgroup.com"],
+    #     subject = "Airflow success: {0}".format(kwargs.get('dag_run')),
+    #     html_content = "{0} records successfully inserted into {1}".format(row_count, xcom_key)
+    # )
+    # email_op.execute(kwargs)
+    email_on_customization(
+        send_to= ["karen.huang@merckgroup.com"],
+        content = content,
+        dag = dag
+    )
 
 
 pull_ps_custom_product_from_palantir_task = PythonOperator(
@@ -115,7 +133,6 @@ truncate_table_and_load_csv_to_mysql_task = PythonOperator(
     dag = dag,
     provide_context = True
 )
-
 
 
 
